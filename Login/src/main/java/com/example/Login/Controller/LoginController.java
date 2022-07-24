@@ -7,6 +7,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.security.Provider;
+
 @RestController
 public class LoginController {
     private final LoginService loginService;
@@ -20,14 +22,12 @@ public class LoginController {
                                   @RequestParam("password") String password,
                                   @RequestParam("confirmPassword") String confirmPassword) {
 
-        final boolean check;
-        try {
-            check = loginService.check(login,password,confirmPassword);
-        } catch (WrongLoginException e) {
-            return false;
-        } catch (WrongPasswordException e) {
-            return false;
-        }
-        return check;
+       boolean result = LoginService.validate(login,password,confirmPassword);
+       if(result) {
+          return true;
+       }
+       else {
+           return false;
+       }
     }
 }
